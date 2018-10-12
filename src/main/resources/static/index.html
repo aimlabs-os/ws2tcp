@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AIMLABS - WEBSOCKETS to TCP reverse proxy</title>
+</head>
+<body>
+<h2>AIMLABS - WEBSOCKETS to TCP Reverse Proxy</h2>
+<div class="events"></div>
+<script>
+    var clientWebSocket = new WebSocket("ws://localhost:8080/ws2tcp");
+    clientWebSocket.onopen = function() {
+        console.log("clientWebSocket.onopen", clientWebSocket);
+        console.log("clientWebSocket.readyState", "websocketstatus");
+        clientWebSocket.send("WEBSOCKET CONNECTION OPEN SUCCESSFUL");
+    }
+    clientWebSocket.onclose = function(error) {
+        console.log("clientWebSocket.onclose", clientWebSocket, error);
+        events("Closing connection");
+    }
+    clientWebSocket.onerror = function(error) {
+        console.log("clientWebSocket.onerror", clientWebSocket, error);
+        events("An error occured");
+    }
+    clientWebSocket.onmessage = function(error) {
+        console.log("clientWebSocket.onmessage", clientWebSocket, error);
+        events(error.data);
+    }
+    function events(responseEvent) {
+        document.querySelector(".events").innerHTML = responseEvent + "<br>" + document.querySelector(".events").innerHTML;
+    }
+
+    setInterval(function () {
+        clientWebSocket.send("HEATBEAT REQUEST");
+    }, 2000)
+</script>
+</body>
+</html>
